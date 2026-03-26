@@ -1,34 +1,60 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inscription — Le Bon Appart</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<?php 
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="container nav__inner">
-      <a href="index.php" class="nav__logo">Le Bon <em>Appart</em></a>
-      <ul class="nav__links" id="nav-links">
-        <li><a href="index.php">Toutes les annonces</a></li>
-        <li><a href="login.php">Connexion</a></li>
-        <li><a href="register.php" class="btn btn--primary btn--sm">Inscription</a></li>
-      </ul>
-      <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  require_once 'config.php';
+  require_once './partials/head.php';
+  require_once './partials/header.php';
+  require_once './partials/nav.php';
 
+  $error = [];
+
+  if ($_SERVER['REQUEST_METHOD']==='POST'){
+    $prenom = htmlspecialchars(trim($_POST['prenom'])) ?? '';
+    $nom = htmlspecialchars(trim($_POST['nom'])) ?? '';
+    $email = htmlspecialchars(trim($_POST['email'])) ?? '';
+    $mot_de_passe = htmlspecialchars(trim($_POST['mot_de_passe'])) ?? '';
+
+    if (empty($prenom)){
+      $error['prenom'] = 'Ce champ est obligatoire';
+    }
+    if (empty($nom)){
+      $error['nom'] = 'Ce champ est obligatoire';
+    }
+    if (empty($email)){
+      $error['email'] = 'Ce champ est obligatoire';
+    }
+    if (empty($mot_de_passe)){
+      $error['mot_de_passe'] = 'Ce champ est obligatoire';
+    }
+
+    $query ="SELECT * FROM agents WHERE email = :email";
+    $res = $pdo->prepare($query);
+    $res->bindValue(':email', $email, PDO::PARAM_STR);
+    $res->execute();
+
+    if ($res-> rowCount() > 0){
+      $_SESSION['flash_error'] = "L'adresse email existe déjà";
+    } else {
+      $insert = "INSERT INTO `agents`(`prenom`, `nom`, `email`, `mot_de_passe`) VALUES (:prenom, :nom, :email, :mot_de_passe)";
+      $req = $pdo->prepare($insert);
+      $req-> bindValue(':prenom', $prenom);
+      $req-> bindValue(':nom', $nom);
+      $req-> bindValue(':email', $email);
+      $hash = password_hash($mot_de_passe, PASSWORD_DEFAULT);
+      $req-> bindValue(':mot_de_passe', $hash);
+      if ($req-> execute()) {
+        $_SESSION['flash'] = "Inscription validé";
+      }
+    }
+  }
+
+?>
   <main class="auth-layout">
     <div>
 
       <!-- Zone messages flash -->
       <div class="flash-zone">
         <!-- Exemple : <div class="alert alert--error">Cette adresse email est déjà utilisée.</div> -->
+        <?php require 'flash.php' ?>
       </div>
 
       <div class="auth-card" style="max-width: 500px;">
@@ -44,21 +70,25 @@
             <div class="form-group">
               <label class="form-label" for="prenom">Prénom <span class="req">*</span></label>
               <input type="text" id="prenom" name="prenom" class="form-control" placeholder="Marie" required autocomplete="given-name">
+              <?php echo $error['prenom'] ?? '' ?>
             </div>
             <div class="form-group">
               <label class="form-label" for="nom">Nom <span class="req">*</span></label>
               <input type="text" id="nom" name="nom" class="form-control" placeholder="Dupont" required autocomplete="family-name">
+              <?php echo $error['nom'] ?? '' ?>
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="email">Adresse email <span class="req">*</span></label>
             <input type="email" id="email" name="email" class="form-control" placeholder="marie@exemple.fr" required autocomplete="email">
+            <?php echo $error['email'] ?? '' ?>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="mot_de_passe">Mot de passe <span class="req">*</span></label>
             <input type="password" id="mot_de_passe" name="mot_de_passe" class="form-control" placeholder="Au moins 8 caractères" required autocomplete="new-password">
+            <?php echo $error['mot_de_passe'] ?? '' ?>
           </div>
 
           <div class="form-group">
@@ -79,34 +109,3 @@
     </div>
   </main>
 
-  <!-- Pied de page -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <span class="footer__logo">Le Bon <em>Appart</em></span>
-          <p>La plateforme d'annonces immobilières entre particuliers.</p>
-        </div>
-        <div>
-          <span class="footer__col-title">Navigation</span>
-          <nav class="footer__links">
-            <a href="index.html">Accueil</a>
-            <a href="index.html?type=location">Locations</a>
-            <a href="index.html?type=vente">Ventes</a>
-          </nav>
-        </div>
-        <div>
-          <span class="footer__col-title">Mon compte</span>
-          <nav class="footer__links">
-            <a href="register.html">Devenir agent</a>
-            <a href="login.html">Connexion</a>
-          </nav>
-        </div>
-      </div>
-      <p class="footer__copy">&copy; 2025 Le Bon Appart — Tous droits réservés.</p>
-    </div>
-  </footer>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>

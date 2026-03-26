@@ -15,6 +15,8 @@ $res-> execute();
 if ($res->rowCount() > 0){
     $agent = $res->fetch(PDO::FETCH_ASSOC);
     $_SESSION['prenom'] = $agent['prenom'];
+} else {
+    $_SESSION['agent_id']= null;
 }
 
 
