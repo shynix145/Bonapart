@@ -1,3 +1,9 @@
+<?php
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,12 +17,12 @@
   <!-- Navigation -->
   <nav class="nav">
     <div class="container nav__inner">
-      <a href="index.html" class="nav__logo">Le Bon <em>Appart</em></a>
+      <a href="index.php" class="nav__logo">Le Bon <em>Appart</em></a>
       <ul class="nav__links" id="nav-links">
-        <li><a href="index.html">Toutes les annonces</a></li>
-        <li><a href="ajouter.html" class="btn btn--outline btn--sm">Publier une annonce</a></li>
-        <li><a href="login.html">Connexion</a></li>
-        <li><a href="register.html" class="btn btn--primary btn--sm">Inscription</a></li>
+        <li><a href="index.php">Toutes les annonces</a></li>
+        <li><a href="ajouter.php" class="btn btn--outline btn--sm">Publier une annonce</a></li>
+        <li><a href="login.php">Connexion</a></li>
+        <li><a href="register.php" class="btn btn--primary btn--sm">Inscription</a></li>
       </ul>
       <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
         <span></span><span></span><span></span>
