@@ -1,28 +1,38 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion — Le Bon Appart</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<?php
+require_once 'config.php';
+require_once 'partials/head.php';
+require_once 'partials/header.php';
+require_once 'partials/nav.php';
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="container nav__inner">
-      <a href="index.php" class="nav__logo">Le Bon <em>Appart</em></a>
-      <ul class="nav__links" id="nav-links">
-        <li><a href="index.php">Toutes les annonces</a></li>
-        <li><a href="login.php">Connexion</a></li>
-        <li><a href="register.php" class="btn btn--primary btn--sm">Inscription</a></li>
-      </ul>
-      <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
 
+if ($_SERVER['REQUEST_METHOD']==='POST'){
+    $email = htmlspecialchars(trim($_POST['email'])) ?? '';
+    $mot_de_passe = htmlspecialchars(trim($_POST['mot_de_passe'])) ?? '';
+
+$sql = "SELECT * FROM agents WHERE email = :email";
+$res = $pdo->prepare($sql);
+$res-> bindValue(':email', $email, PDO::PARAM_STR);
+$res-> execute();
+
+if ($res-> rowCount() > 0){
+  $user = $res->fetch(PDO::FETCH_ASSOC);
+  if (password_verify($mot_de_passe, $user['mot_de_passe'])){
+    $_SESSION['agent_id'] = $user['id'];
+    $_SESSION['prenom'] = $user['prenom'];
+    header("Location: dashboard.php");
+  }
+
+} else {
+  header("Location: register.php");
+  exit();
+}
+
+  }
+
+
+
+
+?>
   <main class="auth-layout">
     <div>
 
