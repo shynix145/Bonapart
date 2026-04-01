@@ -14,7 +14,7 @@ if(!isset($_SESSION['agent_id'])){
 
 $sqlAll = 'SELECT * FROM annonces ORDER BY created_at DESC';
 $query = $pdo->prepare($sqlAll);
-$query->execute();
+$query->execute(); 
 $data = $query->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -97,11 +97,15 @@ $ven = $queryVen->fetchAll(PDO::FETCH_ASSOC);
                 <td><span class="badge badge--location"><?= $d['type'] ?></span></td>
                 <td><?= $d['prix'] ?> € /mois</td>
                 <td class="td-muted"><?= $d['city'] . ", " . $d['postal_code'] ?></td>
-                <td class="td-muted"><?= $d['created_at'] ?></td>
+                <td class="td-muted"><?= date('d-m-Y', strtotime($d['created_at'])) ?></td>
                 <td>
                   <div class="table-actions">
+              <!-- --><?php if($_SESSION['agent_id'] == $d['agent_id']): ?>
                     <a href="modifier.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Modifier</a>
                     <a href="supprimer.php?id=<?= $d['id']?>" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
+              <!-- --><?php else: ?>
+              <!-- --><a href="annonce.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Voir</a>
+              <!-- --><?php endif; ?>
                   </div>
                 </td>
               </tr>
