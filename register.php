@@ -43,6 +43,7 @@
       $req-> bindValue(':mot_de_passe', $hash);
       if ($req-> execute()) {
         $_SESSION['flash'] = "Inscription validé";
+        header('Location:dashboard.php');
       }
     }
   }
