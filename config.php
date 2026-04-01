@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 session_start();
 }
 
-$pdo = new PDO("mysql:host=localhost;dbname=annonces_immo;charset=utf8", "root", "");
+$pdo = new PDO("mysql:host=localhost;dbname=annonces_immo;charset=utf8", "root", "root");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $query = "SELECT * FROM agents WHERE id = :id";
