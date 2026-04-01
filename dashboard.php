@@ -12,7 +12,7 @@ if(!isset($_SESSION['agent_id'])){
     exit();
 }
 
-$sqlAll = 'SELECT * FROM annonces';
+$sqlAll = 'SELECT * FROM annonces ORDER BY created_at DESC';
 $query = $pdo->prepare($sqlAll);
 $query->execute();
 $data = $query->fetchAll(PDO::FETCH_ASSOC);
