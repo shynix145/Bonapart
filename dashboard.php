@@ -100,8 +100,12 @@ $ven = $queryVen->fetchAll(PDO::FETCH_ASSOC);
                 <td class="td-muted"><?= $d['created_at'] ?></td>
                 <td>
                   <div class="table-actions">
+              <!-- --><?php if($_SESSION['agent_id'] == $d['agent_id']): ?>
                     <a href="modifier.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Modifier</a>
                     <a href="supprimer.php?id=<?= $d['id']?>" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
+              <!-- --><?php else: ?>
+              <!-- --><a href="annonce.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Voir</a>
+              <!-- --><?php endif; ?>
                   </div>
                 </td>
               </tr>
