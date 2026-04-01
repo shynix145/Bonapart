@@ -1,44 +1,81 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Publier une annonce — Le Bon Appart</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<?php 
+  require_once 'config.php';
+  require_once './partials/head.php';
+  require_once './partials/header.php';
+  require_once './partials/nav.php';
 
-  <!-- Navigation — état connecté -->
-  <nav class="nav">
-    <div class="container nav__inner">
-      <a href="index.html" class="nav__logo">Le Bon <em>Appart</em></a>
-      <ul class="nav__links" id="nav-links">
-        <li><a href="index.html">Toutes les annonces</a></li>
-        <li><a href="ajouter.html" class="btn btn--outline btn--sm">Publier une annonce</a></li>
-        <li class="nav__agent">Bonjour, Marie</li>
-        <li><a href="dashboard.html">Mon espace</a></li>
-        <li><a href="logout.php" class="btn btn--ghost btn--sm">Déconnexion</a></li>
-      </ul>
-      <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+$page_title = "Publier une annonce";
 
-  <!-- En-tête de page -->
-  <div class="page-header">
-    <div class="container">
-      <span class="page-header__label">Annonces</span>
-      <h1 class="page-header__title">Publier une annonce</h1>
-      <p>Renseignez les informations de votre bien immobilier.</p>
-    </div>
-  </div>
+
+if(!isset($_SESSION['agent_id'])){
+    header("Location: login.php");
+    exit();
+}
+
+if($_SERVER['REQUEST_METHOD']==='POST'){
+$titre=htmlspecialchars(trim($_POST['titre'])) ?? '';
+$description=htmlspecialchars(trim($_POST['description'])) ?? '';
+$type=htmlspecialchars(trim($_POST['type'])) ?? '';
+$prix=htmlspecialchars(trim($_POST['prix'])) ?? '';
+$codepostal=htmlspecialchars(trim($_POST['postal_code'])) ?? '';
+$city=htmlspecialchars(trim($_POST['city'])) ?? '';
+$choix=['location','vente'];
+
+
+if(empty($titre) || empty($description) || empty($type) ||empty($prix) || empty($codepostal) || empty($city)){
+  $_SESSION['flash_error']="Veuillez remplir tous les champs"; 
+} elseif (!in_array($type,$choix)){
+$_SESSION['flash_error']="Veuillez renseigner un type";
+}elseif(!is_numeric($prix)){
+  $_SESSION['flash_error']="Veuillez renseigner un nombre"; 
+} else {
+$query=("INSERT INTO `annonces`(`agent_id`, `titre`, `description`, `type`, `prix`, `postal_code`, `city`) VALUES (:agent_id,:titre,:description,:type,:prix,:postal_code,:city)");
+
+$insert_annonce = $pdo->prepare($query);
+$insert_annonce->bindValue(':agent_id',$_SESSION['agent_id'],PDO::PARAM_INT);
+$insert_annonce->bindValue(':titre',$titre,PDO::PARAM_STR);
+$insert_annonce->bindValue(':description',$description,PDO::PARAM_STR);
+$insert_annonce->bindValue(':type',$type,PDO::PARAM_STR);
+$insert_annonce->bindValue(':prix',$prix,PDO::PARAM_INT);
+$insert_annonce->bindValue(':postal_code',$prix,PDO::PARAM_STR);
+$insert_annonce->bindValue(':city',$city,PDO::PARAM_STR);
+
+if($insert_annonce->execute()){
+$_SESSION['flash']="Votre annonce à bien été publié"; 
+header('Location:dashboard.php');
+exit();
+}
+}
+}
+
+
+
+
+
+
+
+
+
+?>
+
+
+
+
+
+
+
+
+
+
+
+
 
   <main>
     <div class="container section--sm">
 
       <!-- Zone messages flash -->
       <div class="flash-zone">
+        <?php require 'flash.php' ?>
         <!-- Exemple : <div class="alert alert--error">Le titre est obligatoire.</div> -->
       </div>
 
@@ -96,35 +133,6 @@
     </div>
   </main>
 
-  <!-- Pied de page -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <span class="footer__logo">Le Bon <em>Appart</em></span>
-          <p>La plateforme d'annonces immobilières entre particuliers.</p>
-        </div>
-        <div>
-          <span class="footer__col-title">Navigation</span>
-          <nav class="footer__links">
-            <a href="index.html">Accueil</a>
-            <a href="index.html?type=location">Locations</a>
-            <a href="index.html?type=vente">Ventes</a>
-          </nav>
-        </div>
-        <div>
-          <span class="footer__col-title">Mon espace</span>
-          <nav class="footer__links">
-            <a href="dashboard.html">Tableau de bord</a>
-            <a href="ajouter.html">Nouvelle annonce</a>
-            <a href="logout.php">Déconnexion</a>
-          </nav>
-        </div>
-      </div>
-      <p class="footer__copy">&copy; 2025 Le Bon Appart — Tous droits réservés.</p>
-    </div>
-  </footer>
+<?php require_once 'partials/footer.php';?> 
 
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
+ 

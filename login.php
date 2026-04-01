@@ -5,6 +5,7 @@ require_once 'partials/header.php';
 require_once 'partials/nav.php';
 
 
+
 if ($_SERVER['REQUEST_METHOD']==='POST'){
     $email = htmlspecialchars(trim($_POST['email'])) ?? '';
     $mot_de_passe = htmlspecialchars(trim($_POST['mot_de_passe'])) ?? '';
@@ -88,41 +89,11 @@ if ($res-> rowCount() > 0){
         </form>
 
         <div class="auth-card__footer">
-          Pas encore de compte ? <a href="register.html">Créer un compte</a>
+          Pas encore de compte ? <a href="register.php">Créer un compte</a>
         </div>
 
       </div>
     </div>
   </main>
 
-  <!-- Pied de page -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <span class="footer__logo">Le Bon <em>Appart</em></span>
-          <p>La plateforme d'annonces immobilières entre particuliers.</p>
-        </div>
-        <div>
-          <span class="footer__col-title">Navigation</span>
-          <nav class="footer__links">
-            <a href="index.html">Accueil</a>
-            <a href="index.html?type=location">Locations</a>
-            <a href="index.html?type=vente">Ventes</a>
-          </nav>
-        </div>
-        <div>
-          <span class="footer__col-title">Mon compte</span>
-          <nav class="footer__links">
-            <a href="register.html">Devenir agent</a>
-            <a href="login.html">Connexion</a>
-          </nav>
-        </div>
-      </div>
-      <p class="footer__copy">&copy; 2025 Le Bon Appart — Tous droits réservés.</p>
-    </div>
-  </footer>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
+<?php require_once 'partials/footer.php';?>
