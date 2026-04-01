@@ -97,7 +97,7 @@ $ven = $queryVen->fetchAll(PDO::FETCH_ASSOC);
                 <td><span class="badge badge--location"><?= $d['type'] ?></span></td>
                 <td><?= $d['prix'] ?> € /mois</td>
                 <td class="td-muted"><?= $d['city'] . ", " . $d['postal_code'] ?></td>
-                <td class="td-muted"><?= $d['created_at'] ?></td>
+                <td class="td-muted"><?= date('d-m-Y', strtotime($d['created_at'])) ?></td>
                 <td>
                   <div class="table-actions">
                     <a href="modifier.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Modifier</a>
