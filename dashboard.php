@@ -14,7 +14,7 @@ if(!isset($_SESSION['agent_id'])){
 
 $sqlAll = 'SELECT * FROM annonces';
 $query = $pdo->prepare($sqlAll);
-$query->execute();
+$query->execute(); 
 $data = $query->fetchAll(PDO::FETCH_ASSOC);
 
 

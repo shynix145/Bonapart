@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS annonces (
   id          INT            NOT NULL AUTO_INCREMENT,
   agent_id    INT            NOT NULL,
   titre       VARCHAR(255)   NOT NULL,
-  description TEXT           NOT NULL,
+  ùm TEXT           NOT NULL,
   type        ENUM('location','vente') NOT NULL,
   prix        DECIMAL(10,2)  NOT NULL,
   postal_code VARCHAR(10)    NOT NULL,
