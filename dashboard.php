@@ -1,36 +1,49 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon espace — Le Bon Appart</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<?php 
+  require_once 'config.php';
+  require_once './partials/head.php';
+  require_once './partials/header.php';
+  require_once './partials/nav.php';
 
-  <!-- Navigation — état connecté -->
-  <nav class="nav">
-    <div class="container nav__inner">
-      <a href="index.php" class="nav__logo">Le Bon <em>Appart</em></a>
-      <ul class="nav__links" id="nav-links">
-        <li><a href="index.php">Toutes les annonces</a></li>
-        <li><a href="ajouter.php" class="btn btn--outline btn--sm">Publier une annonce</a></li>
-        <!-- État connecté : PHP affiche prénom depuis $_SESSION['agent_prenom'] -->
-        <li class="nav__agent">Bonjour, Marie</li>
-        <li><a href="dashboard.php">Mon espace</a></li>
-        <li><a href="logout.php" class="btn btn--ghost btn--sm">Déconnexion</a></li>
-      </ul>
-      <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+$page_title = "Dashboard";
+
+
+if(!isset($_SESSION['agent_id'])){
+    header("Location: login.php");
+    exit();
+}
+
+$sqlAll = 'SELECT * FROM annonces';
+$query = $pdo->prepare($sqlAll);
+$query->execute();
+$data = $query->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+$sqlLoc = 'SELECT * FROM annonces WHERE type = :location';
+$queryLoc =$pdo->prepare($sqlLoc);
+$queryLoc->bindValue(':location','location');
+$queryLoc->execute();
+$loc = $queryLoc->fetchAll(PDO::FETCH_ASSOC);
+
+
+$sqlVen = 'SELECT * FROM annonces WHERE type = :vente';
+$queryVen =$pdo->prepare($sqlVen);
+$queryVen-> bindValue(':vente', 'vente', PDO::PARAM_STR);
+$queryVen->execute();
+$ven = $queryVen->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+?>
+
+
 
   <main>
     <div class="container section">
 
       <!-- Zone messages flash -->
       <div class="flash-zone">
+        <?php require 'flash.php' ?>
         <!-- Exemple : <div class="alert alert--success">Annonce supprimée avec succès.</div> -->
       </div>
 
@@ -40,21 +53,21 @@
           <h1 class="dashboard-welcome__title">Bonjour, Marie</h1>
           <p>Gérez vos annonces depuis votre espace personnel.</p>
         </div>
-        <a href="ajouter.html" class="btn btn--primary">Publier une annonce</a>
+        <a href="ajouter.php" class="btn btn--primary">Publier une annonce</a>
       </div>
 
       <!-- Statistiques -->
       <div class="dashboard-stats">
         <div class="dash-stat">
-          <span class="dash-stat__value">7</span>
+          <span class="dash-stat__value"><?= count($data)  ?></span>
           <span class="dash-stat__label">Annonces publiées</span>
         </div>
         <div class="dash-stat">
-          <span class="dash-stat__value">4</span>
+          <span class="dash-stat__value"><?= count($loc) ?></span>
           <span class="dash-stat__label">Locations</span>
         </div>
         <div class="dash-stat">
-          <span class="dash-stat__value">3</span>
+          <span class="dash-stat__value"><?= count($ven) ?></span>
           <span class="dash-stat__label">Ventes</span>
         </div>
       </div>
@@ -63,7 +76,7 @@
       <div class="table-wrapper">
         <div class="table-header">
           <h4>Mes annonces</h4>
-          <a href="ajouter.html" class="btn btn--primary btn--sm">Nouvelle annonce</a>
+          <a href="ajouter.php" class="btn btn--primary btn--sm">Nouvelle annonce</a>
         </div>
         <div style="overflow-x:auto;">
           <table>
@@ -78,45 +91,21 @@
               </tr>
             </thead>
             <tbody>
+              <?php foreach($data as $d):  ?> 
               <tr>
-                <td><a href="annonce.html" style="color:var(--accent); font-weight:500;">Appartement lumineux 3 pièces</a></td>
-                <td><span class="badge badge--location">Location</span></td>
-                <td>850 € /mois</td>
-                <td class="td-muted">Lyon, 69001</td>
-                <td class="td-muted">18 jan. 2025</td>
+                <td><a href="annonce.php" style="color:var(--accent); font-weight:500;"><?= $d['titre'] ?></a></td>
+                <td><span class="badge badge--location"><?= $d['type'] ?></span></td>
+                <td><?= $d['prix'] ?> € /mois</td>
+                <td class="td-muted"><?= $d['city'] . ", " . $d['postal_code'] ?></td>
+                <td class="td-muted"><?= $d['created_at'] ?></td>
                 <td>
                   <div class="table-actions">
-                    <a href="modifier.html?id=1" class="btn btn--ghost btn--sm">Modifier</a>
-                    <a href="supprimer.php?id=1" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
+                    <a href="modifier.php?id=<?= $d['id'] ?>" class="btn btn--ghost btn--sm">Modifier</a>
+                    <a href="supprimer.php?id=<?= $d['id']?>" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
                   </div>
                 </td>
               </tr>
-              <tr>
-                <td><a href="annonce.html" style="color:var(--accent); font-weight:500;">T3 traversant avec balcon</a></td>
-                <td><span class="badge badge--vente">Vente</span></td>
-                <td>198 000 €</td>
-                <td class="td-muted">Lyon, 69003</td>
-                <td class="td-muted">12 jan. 2025</td>
-                <td>
-                  <div class="table-actions">
-                    <a href="modifier.html?id=2" class="btn btn--ghost btn--sm">Modifier</a>
-                    <a href="supprimer.php?id=2" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a href="annonce.html" style="color:var(--accent); font-weight:500;">Studio meublé avec parking</a></td>
-                <td><span class="badge badge--location">Location</span></td>
-                <td>620 € /mois</td>
-                <td class="td-muted">Lyon, 69007</td>
-                <td class="td-muted">5 jan. 2025</td>
-                <td>
-                  <div class="table-actions">
-                    <a href="modifier.html?id=3" class="btn btn--ghost btn--sm">Modifier</a>
-                    <a href="supprimer.php?id=3" class="btn btn--danger btn--sm" onclick="return confirm('Supprimer cette annonce ?')">Supprimer</a>
-                  </div>
-                </td>
-              </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
         </div>
@@ -128,42 +117,10 @@
         <h4>Aucune annonce publiée</h4>
         <p>Vous n'avez pas encore publié d'annonce.</p>
         <br>
-        <a href="ajouter.html" class="btn btn--primary">Publier ma première annonce</a>
+        <a href="ajouter.php" class="btn btn--primary">Publier ma première annonce</a>
       </div>
       -->
 
     </div>
   </main>
-
-  <!-- Pied de page -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <span class="footer__logo">Le Bon <em>Appart</em></span>
-          <p>La plateforme d'annonces immobilières entre particuliers.</p>
-        </div>
-        <div>
-          <span class="footer__col-title">Navigation</span>
-          <nav class="footer__links">
-            <a href="index.html">Accueil</a>
-            <a href="index.html?type=location">Locations</a>
-            <a href="index.html?type=vente">Ventes</a>
-          </nav>
-        </div>
-        <div>
-          <span class="footer__col-title">Mon espace</span>
-          <nav class="footer__links">
-            <a href="dashboard.html">Tableau de bord</a>
-            <a href="ajouter.html">Nouvelle annonce</a>
-            <a href="logout.php">Déconnexion</a>
-          </nav>
-        </div>
-      </div>
-      <p class="footer__copy">&copy; 2025 Le Bon Appart — Tous droits réservés.</p>
-    </div>
-  </footer>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
+<?php require_once 'partials/footer.php';?> 

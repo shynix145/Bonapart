@@ -1,44 +1,33 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modifier l'annonce — Le Bon Appart</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
+<?php 
+  require_once 'config.php';
+  require_once './partials/head.php';
+  require_once './partials/header.php';
+  require_once './partials/nav.php';
 
-  <!-- Navigation — état connecté -->
-  <nav class="nav">
-    <div class="container nav__inner">
-      <a href="index.php" class="nav__logo">Le Bon <em>Appart</em></a>
-      <ul class="nav__links" id="nav-links">
-        <li><a href="index.php">Toutes les annonces</a></li>
-        <li><a href="ajouter.php" class="btn btn--outline btn--sm">Publier une annonce</a></li>
-        <li class="nav__agent">Bonjour, Marie</li>
-        <li><a href="dashboard.php">Mon espace</a></li>
-        <li><a href="logout.php" class="btn btn--ghost btn--sm">Déconnexion</a></li>
-      </ul>
-      <button class="nav__toggle" id="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+$page_title = "Publier une annonce";
 
-  <!-- En-tête de page -->
-  <div class="page-header">
-    <div class="container">
-      <span class="page-header__label">Annonces</span>
-      <h1 class="page-header__title">Modifier l'annonce</h1>
-      <p>Modifiez les informations de votre annonce.</p>
-    </div>
-  </div>
+
+if(!isset($_SESSION['agent_id'])){
+    header("Location: login.php");
+    exit();
+}
+
+
+
+
+
+?>
+
+
+
+
 
   <main>
     <div class="container section--sm">
 
       <!-- Zone messages flash -->
       <div class="flash-zone">
+        <?php require 'flash.php' ?>
         <!-- Exemple : <div class="alert alert--error">Le titre est obligatoire.</div> -->
       </div>
 
@@ -107,35 +96,4 @@
     </div>
   </main>
 
-  <!-- Pied de page -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <span class="footer__logo">Le Bon <em>Appart</em></span>
-          <p>La plateforme d'annonces immobilières entre particuliers.</p>
-        </div>
-        <div>
-          <span class="footer__col-title">Navigation</span>
-          <nav class="footer__links">
-            <a href="index.html">Accueil</a>
-            <a href="index.html?type=location">Locations</a>
-            <a href="index.html?type=vente">Ventes</a>
-          </nav>
-        </div>
-        <div>
-          <span class="footer__col-title">Mon espace</span>
-          <nav class="footer__links">
-            <a href="dashboard.html">Tableau de bord</a>
-            <a href="ajouter.html">Nouvelle annonce</a>
-            <a href="logout.php">Déconnexion</a>
-          </nav>
-        </div>
-      </div>
-      <p class="footer__copy">&copy; 2025 Le Bon Appart — Tous droits réservés.</p>
-    </div>
-  </footer>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
+<?php require_once 'partials/footer.php';?> 
